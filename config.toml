@@ -1,7 +1,7 @@
 [cognito]
-userPoolID = "us-east-1_9ZCrt7dfk"
-clientID = "25nchv2p9c7h4mi0s0om22j4lj"
+userPoolID = "eu-central-1_AT7fgivnL"
+clientID = "502157d48os4q5bepkiq058pvq"
 jwksURL = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9ZCrt7dfk/.well-known/jwks.json"
 
 [s3]
-bucketName = "pluralsight-photos"
+bucketName = "my-insta-photos"

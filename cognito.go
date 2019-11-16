@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/lestrrat/go-jwx/jwk"

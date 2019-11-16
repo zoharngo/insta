@@ -3,9 +3,10 @@ package main
 import (
 	"net/http"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func registerRoutes() *gin.Engine {
@@ -13,8 +14,7 @@ func registerRoutes() *gin.Engine {
 	log.Info("Registering routes")
 
 	r := gin.Default()
-
-	store := sessions.NewCookieStore([]byte("viErkShjgQP59tgelRXsILXNEarwRA6p"))
+	store := cookie.NewStore([]byte("viErkShjgQP59tgelRXsILXNEarwRA6p"))
 	r.Use(sessions.Sessions("photos-session", store))
 
 	r.NoRoute(noroute)
