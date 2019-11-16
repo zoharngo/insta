@@ -1,0 +1,9 @@
+{
+  "name": "PhotosApp",
+  "description": "Photos App",
+  "memory": 128,
+  "timeout": 10,
+  
+  "role": "arn:aws:iam::746425690931:role/PhotosApp_lambda_function",
+  "environment": {}
+}
