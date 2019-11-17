@@ -16,8 +16,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
-
-// HandleRequest - Handling Asynchronous Image Resizing with Lambda and S3 
+// HandleRequest - Handling Asynchronous Image Resizing with Lambda and S3
 func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 	for _, record := range s3Event.Records {
 
@@ -46,6 +45,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 
 		if err != nil {
 			log.Printf("Could not download from S3: %v", err)
+			continue
 		}
 
 		log.Printf("Decoding image: %v bytes", len(buff.Bytes()))
@@ -56,6 +56,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 		img, err := jpeg.Decode(reader)
 		if err != nil {
 			log.Printf("bad response: %s", err)
+			continue
 		}
 
 		log.Printf("Generating thumbnail")
@@ -63,6 +64,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 
 		if thumbnail == nil {
 			log.Printf("resize.Thumbnail returned nil")
+			continue
 		}
 
 		log.Printf("Encoding image for upload to S3")
@@ -71,6 +73,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 
 		if err != nil {
 			log.Printf("JPEG encoding error: %v", err)
+			continue
 		}
 
 		// Filename: e5f97749-5d2f-4770-89ce-5d68b1a90f7b/filename.jpg
@@ -89,6 +92,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 
 		if err != nil {
 			log.Printf("Failed to upload: %v", err)
+			continue
 		}
 
 		log.Printf("Successfully uploaded to: %v", result.Location)
