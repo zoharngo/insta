@@ -1,17 +1,21 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 
-	log "github.com/sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 type user struct {
@@ -28,6 +32,26 @@ type follower struct {
 
 const userKey = "userid"
 const accessToken = "accessToken"
+
+var topicArn string
+
+func init() {
+
+	log.Info("Initializing SNS")
+
+	log.Info("Loading configuration")
+	viper.SetConfigName("config") // config.toml
+	viper.AddConfigPath(".")      // use working directory
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Errorf("error reading config file, %v", err)
+		return
+	}
+
+	topicArn = viper.GetString("sns.topicArn")
+
+	log.Info("SNS topic: ", topicArn)
+}
 
 func loginForm(c *gin.Context) {
 	session := sessions.Default(c)
@@ -175,6 +199,28 @@ func signup(c *gin.Context) {
 		sessionStore.Set(accessToken, jwt)
 		sessionStore.Save()
 		c.Redirect(http.StatusFound, "/photos")
+	}
+
+	// Send SNS notifcation
+
+	log.Info("Sending SNS message")
+
+	snssvc := sns.New(sess)
+
+	var buffer bytes.Buffer
+	userdata, _ := json.Marshal(user)
+	buffer.Write(userdata)
+
+	params := &sns.PublishInput{
+		Subject:  aws.String("New Subscriber"),
+		Message:  aws.String("User:\n" + buffer.String()),
+		TopicArn: aws.String(topicArn),
+	}
+
+	_, err = snssvc.Publish(params)
+
+	if err != nil {
+		log.Errorf("Error: %v", err.Error())
 	}
 
 	sessionStore.Save()

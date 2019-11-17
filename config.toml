@@ -4,4 +4,7 @@ clientID = "502157d48os4q5bepkiq058pvq"
 jwksURL = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_9ZCrt7dfk/.well-known/jwks.json"
 
 [s3]
-bucketName = "my-insta-photos"
+bucketName = "insta-photos-web-app-try2"
+
+[sns]
+topicArn = "arn:aws:sns:eu-west-2:610951528832:PhotosAppNewSubscriber"
