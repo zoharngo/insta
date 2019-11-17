@@ -16,8 +16,7 @@ import (
 	"github.com/nfnt/resize"
 )
 
-
-// HandleRequest - Handling Asynchronous Image Resizing with Lambda and S3 
+// HandleRequest - Handling Asynchronous Image Resizing with Lambda and S3
 func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 	for _, record := range s3Event.Records {
 
@@ -56,6 +55,7 @@ func HandleRequest(ctx context.Context, s3Event events.S3Event) error {
 		img, err := jpeg.Decode(reader)
 		if err != nil {
 			log.Printf("bad response: %s", err)
+			continue
 		}
 
 		log.Printf("Generating thumbnail")
